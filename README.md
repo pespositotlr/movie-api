@@ -10,6 +10,8 @@ Each movie has a calculated average rating which is rounded to the nearest half-
 
 Running Time is displayed in minutes.
 
+Possible future additions may include more tests, the ability to add movies or users, a UI for users to see their ratings, more information about the movies such as actors/directors, etc.
+
 ### API Functions
 
 There are four main API functions:
@@ -36,7 +38,7 @@ Example: https://localhost:44357/movies/B
 
 Example: https://localhost:44357/movies/C?userId=1
 
-5. Also known as "API D". This adds or updates a rating for a movie. This is a PUT requrst.
+5. Also known as "API D". This adds or updates a rating for a movie. This is a PUT request.
 
 Example URL: https://localhost:44357/movies/D
 
