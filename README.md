@@ -1,53 +1,159 @@
-# Kredit Software Engineer Interview
+# Movie API
 
 ## Overview
 
-Kredit helps people out of debt. One significant step of climbing out of debt is eventually navigating people into settlement. 
+This is a test API built in .NET Core 3.1 for adding movie reivew to a data store. It doesn't currently have functionality for adding movies or users, those are setup by default. For a datastore I'm using SQLite. It uses EntityFramework for access of the database. I tried to setup requests and updates using SOLID design principles.
 
-The task is to create a payment calculator that lets a person calculate and theoretically split their settlement payments into 4 interest free installments, every two weeks. The first 25% is taken when the settlement payment starts, and the remaining 3 installments of 25% are automatically taken every 14 days. 
+If a call is made where no values are found a 404 Not Found response should be returned. If the request is invalid, a 400 Bad Request response should be returned. Upon a valid request a 200 OK response should be returned.
 
-### The Challenge
+Each movie has a calculated average rating which is rounded to the nearest half-number (1, 1.5, 2, 2.5, etc.) out of a maximum of 5.
 
-You will build a core service for our business, a Settlement Calculator. 
+Running Time is displayed in minutes.
 
-### User Story
+### API FUnctions
 
-As a Kredit Customer, I would like to establish a payment plan spread over 6 weeks that splits the original charge evenly over 4 installments.
+There are four main API functions:
 
-#### Implementation Details
+1. Get Movie
 
-The Code base has two projects
-- The Kredit project which has been scaffolded with the standard angular template. The "Service" folder is the code that was added on by the Kredit team.
-- The Kredit.Test project which has packages with xunit and a prewritten test.
+Gets a single movie by ID. This is a GET request.
 
-The test has a few parts
-- Updating the PaymentPlanFactory with the correct implemention per specs.
-- Add any unit tests you deem necessary. Ensuring they pass.
-- Setting up angular / .net REST API to have the screens work (see below).
+Example: https://localhost:44357/movies/get-movie/1
 
-### Acceptance Criteria (Factory Logic)
-- Given it is the 1st of January, 2020
-- When I create an order of $100.00
-- And I select 4 Installments
-- And I select a frequency of 14 days
-- Then I should be charged these 4 installments
-  - `01/01/2020   -   $25.00`
-  - `01/15/2020   -   $25.00`
-  - `01/29/2020   -   $25.00`
-  - `02/12/2020   -   $25.00`
+2. Also known as "API A". Gets movies by filter. This is a GET request. The genre list is "any of these". So if you select genre 1 and genre 2, it will get movies which have either 1 OR 2.
 
-### Acceptance Criteria (Angular)
-Update the angular front-end to have a form with two fields:
-- Input for settlement amount
-- Submit button
+Examples: https://localhost:44357/movies/A?yearOfRelease=1977
 
-![Form](https://github.com/kreditfinancial/kredit-interview/raw/master/assets/one.png)
+https://localhost:44357/movies/A?genres=1&genres=2
 
-Form should talk restfully to the backend and return an appropriate thank-you response page with the scheduled list of payment dates and amounts.
+https://localhost:44357/movies/A?title=Alien
 
-![Thank You](https://github.com/kreditfinancial/kredit-interview/raw/master/assets/two.png)
+3. Also known as "API B". Gets the top 5 movies based on the total average rating across all users. This is a GET request.
 
-- The form and thank you pages should have different url routes.
-- Apply standard validation in areas you feel are needed.
-- Tighten up the integration with a navigation link at the top.
-- No unit tests are needed on the angular side.
+Example: https://localhost:44357/movies/B
+
+4. Also known as "API C". Gets the top 5 movies based on a certain user's ratings. This is a GET request.
+
+Example: https://localhost:44357/movies/C?userId=1
+
+5. Also known as "API D". This adds or updates a rating for a movie. This is a PUT requrst.
+
+Example URL: https://localhost:44357/movies/D
+
+Example JSON body:
+
+{ 
+"UserId" : 1,
+"MovieId" : 7,
+"Rating": 4
+}
+
+### Built-In Data
+
+The design of this is to use existing data for movies and users, the only ability to mutate the data is by adding user reviews. You can view this data by opening the "MoviesDB.db" file located in the "MoviesAPI" folder in SQLiteStudio.
+
+But for reference I'll put the test data here:
+
+Movie
+```
+Id	Title	YearOfRelease	RunningTime
+1	Star Wars	1977	121
+2	A Fistful of Dollars	1964	99
+3	Alien	1979	117
+4	The Godfather	1972	177
+5	Mission: Impossible	1996	110
+6	Citizen Kane	1941	119
+7	Back to the Future	1985	116
+```
+
+Genre
+```
+Id	Name
+1	Action
+2	Sci-Fi
+3	Comedy
+4	Western
+5	Romance
+6	Drama
+7	Romantic comedy
+8	Thriller
+9	Documentary
+```
+
+User
+```
+Id	Username	CreateDate
+1	Jim	12/9/2020
+2	Bob	12/10/2020
+3	Frank	12/11/2020
+4	William	12/7/2020
+5	Jackie	1/7/2019
+6	Don	12/7/2019
+7	Melissa	12/7/2020
+8	Franklin	6/7/2020
+9	George	1/7/2020
+10	Anne	2/7/2020
+```
+
+UserReview
+```
+ReviewId	UserId	MovieId	Rating
+1	1	1	4
+2	2	1	4
+3	3	1	4
+4	4	1	4
+5	5	1	4
+6	6	1	3.5
+7	7	1	4
+8	8	1	4
+9	9	1	4
+10	10	1	3
+11	1	2	4
+12	1	3	4
+13	1	4	4
+14	1	5	4
+15	1	6	4
+16	1	7	4
+17	2	2	3
+18	2	3	2
+19	2	4	3.5
+20	2	5	3.5
+21	2	6	3
+22	2	7	3
+23	3	5	3
+24	3	7	3.5
+25	4	7	3.5
+26	5	7	3.5
+27	6	7	3.5
+28	6	4	1
+29	6	2	4
+30	7	2	4
+31	8	2	4
+32	8	7	3
+```
+
+GenreMovieAssignments
+```
+AssignmentId	MovieId	GenreId
+1	1	2
+2	1	1
+3	2	4
+4	2	6
+5	1	6
+6	3	2
+7	3	8
+8	3	1
+9	4	6
+10	4	8
+11	5	8
+12	5	1
+13	6	6
+14	6	5
+15	7	2
+16	7	1
+17	7	4
+```
+
+### Tests
+
+I also added unit tests in a separate project that seeds its own data into the SQLite database.
