@@ -10,7 +10,7 @@ Each movie has a calculated average rating which is rounded to the nearest half-
 
 Running Time is displayed in minutes.
 
-### API FUnctions
+### API Functions
 
 There are four main API functions:
 
@@ -47,6 +47,8 @@ Example JSON body:
 "MovieId" : 7,
 "Rating": 4
 }
+
+I tested this using Postman.
 
 ### Built-In Data
 
@@ -152,6 +154,17 @@ AssignmentId	MovieId	GenreId
 15	7	2
 16	7	1
 17	7	4
+```
+
+These are the actual average scores by default (Note that the API will return them rounded to the nearest .5) And these will change if more are added.
+```
+1 Star Wars 		        3.85
+2 A Fistful of Dollars  3.8
+3 Alien				          3
+4 The Godfather 	      2.8333333333333335
+5 Mission Impossible    3.5
+6 Citizen Kane 		      3.5
+7 Back to the Future    3.4285714285714284
 ```
 
 ### Tests
